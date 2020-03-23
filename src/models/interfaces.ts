@@ -4,6 +4,7 @@ export interface Isuario {
   name ?:string, 
   password ?: string
 }
+
 export interface IUsuarioFro {
   id?:string,
   idBD :string,
@@ -11,7 +12,6 @@ export interface IUsuarioFro {
    nombre? :string,
     password ?:string
  }
-
  export interface  Imensaje{
    de ?: string,
    para ?:string,
@@ -22,5 +22,13 @@ export interface IUsuarioFro {
  }
  export interface Ichat{
     userId? :string,
-    mensajes?: Imensaje[]
+    conversaciones?:isms[]
+ }
+export interface  isms{
+    idestino? :string,
+    idConver?:string
+}
+ export interface Iconversacion{
+   idConversacion ?:string,
+   mensajes ?:Imensaje[]
  }

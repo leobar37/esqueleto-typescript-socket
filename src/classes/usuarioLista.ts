@@ -42,7 +42,7 @@ export class UsuarioList {
   public loguinUsuario( nombre :string , password :string){
      return new Promise( async ( resolve , reject)=>{
          let user :IUsuarioFro  = await verificarUsuario(nombre);
-         let rpta  =  await bycript.compareSync(password,user.password || '');
+         let rpta  =  await bycript.compareSync(password , user.password || '');
          if(rpta){
             resolve(user)
           }else{

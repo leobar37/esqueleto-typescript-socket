@@ -14,6 +14,7 @@ router.post('/login' , async ( req : Request, res :Response)=>{
       error = true;
       res.json(err);
     });
+  
     if(error == false)
     res.json({ok : true  , user });
   });
@@ -24,10 +25,18 @@ router.post('/login' , async ( req : Request, res :Response)=>{
     us.nombre = nombre;
     us.password = await bycript.hashSync( password ,10); 
     let rpta :any =await ctrlUser.agregar(us);
-    let user = new Usuario();
-     user = rpta;
-     user.password = '>';
-  res.json({ok : true  , rpta :user});
+    let user ;
+    if(rpta != false){
+    user = new Usuario();
+    user.id = rpta.id;
+    user.idBD = rpta.idBD;
+    user.nombre = rpta.nombre;
+    user.sala  = rpta.sala;
+    console.log(user);
+    res.json({ok : true  , rpta :user});
+  }else{
+    res.json( { ok : true , rpta});
+  }
 });
 
 

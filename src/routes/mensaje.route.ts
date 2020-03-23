@@ -1,6 +1,6 @@
 import {Request , Response , Router } from 'express';
 import Server from '../classes/server';
-import { agregarMensaje, getMsjs } from '../bd';
+import { enviarMensaje, buscarConversacion } from '../bd';
 import { mensaje } from '../sockets/socket';
 import { Imensaje } from '../models/interfaces';
 import { UsuarioList } from '../classes/usuarioLista';
@@ -17,26 +17,32 @@ router.post('/mensaje/:id' ,async ( req : Request , res : Response )=>{
     const { id } = req.params;
     //emitir mensaje    
     const server = Server.instance;
- let msj:Imensaje= {
-     de :de,
-     para : para,
-     mensaje :mensaje
- }
- let recibido :boolean = false;
- let user :Usuario = await ctrlUsuarios.getUsuario(id);
- let  chats =  await agregarMensaje(id , msj);
- if(user.id && user.id.length > 0){
+    let msj:Imensaje= {
+      de :de,
+       para : para,
+       mensaje :mensaje
+    }
+    //buscar si existe la conversacion con el destinatario
+   let recibido :boolean = false;
+   let destinatario :Usuario = await ctrlUsuarios.getUsuario(id);
+   if(destinatario){
+    let conversacion = await enviarMensaje( de , destinatario.idBD || '' , msj);  
+   if(destinatario.id && destinatario.id.length > 0){
+  
+        server.io.in(destinatario.id).emit('mensaje-privado' , { mensaje : true , conversacion}); 
      recibido =  true;
-    server.io.in(user.id).emit('mensaje-privado' , { mensaje : true}); 
- }
- res.json( { ok : true , recibido});
+    }
+    res.json( { ok : true , conversacion , recibido});
+    } 
+
+//    let  chats =  await agregarMensaje(id , msj);
+
 });
 
 router.get('/mensaje/:id' , async (req: Request, res :Response  )=>{
 //devolver los mensajes nuevos 
-const {  id  }  = req.params;
-   let chats =await getMsjs(id);
-   
+const { id }  = req.params;
+   let chats =await buscarConversacion(id);
    res.json({ chats});
 });
 

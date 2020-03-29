@@ -21,14 +21,6 @@ export default class Server {
         this.io = socketIo(this.serveHttp);
         this.escucharSockets();
     }
-    /*el patron singlento asegura que 
-    solo se tendra una instancia de la clase server :
-    Las situaciones más habituales de aplicación de este patrón 
-    son aquellas en las que dicha clase controla el acceso 
-    a un recurso físico único (como puede ser el ratón o un
-     archivo abierto en modo exclusivo) o cuando cierto
-    tipo de datos debe estar disponible para todos los
-    demás objetos de la aplicación.  */
      public static  get instance(){ return   this._instance || ( this._instance = new Server());}
      private confiExpres(){
         //middlewares
@@ -37,6 +29,7 @@ export default class Server {
         this.app.use(express.json());
         this.app.use(cors( { origin : true , credentials : true}));
         //rutas
+        
         this.app.use( router);
     }
     private escucharSockets(){
@@ -44,13 +37,9 @@ export default class Server {
             //conectar client
             socket.conectarCliente(cliente);
             //flujo de mensajes
-            socket.mensaje(cliente ,  this.io); 
            //desconeccion de los sockets
-            socket.desconectar(cliente);
-            socket.configurarUsuario(cliente , this.io);
-            
+            socket.desconectar(cliente); 
          })
-        
     }
    start(resolve :any){
       this.serveHttp.listen( this.port , resolve );   
